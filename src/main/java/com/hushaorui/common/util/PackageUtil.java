@@ -464,4 +464,70 @@ public class PackageUtil {
 				Float.class.equals(clazz) || Byte.class.equals(clazz) ||
 				Short.class.equals(clazz) || Character.class.equals(clazz);
 	}
+
+	/**
+	 * 获取基本类型的包装类
+	 * @param clazz 类型
+	 * @return 返回包装类型，如果不是基本类型，则返回本身
+	 */
+	public static Class<?> getPackagingType(Class<?> clazz) {
+		if (int.class.equals(clazz)) {
+			return Integer.class;
+		}
+		if (long.class.equals(clazz)) {
+			return Long.class;
+		}
+		if (boolean.class.equals(clazz)) {
+			return Boolean.class;
+		}
+		if (double.class.equals(clazz)) {
+			return Double.class;
+		}
+		if (float.class.equals(clazz)) {
+			return Float.class;
+		}
+		if (byte.class.equals(clazz)) {
+			return Byte.class;
+		}
+		if (short.class.equals(clazz)) {
+			return Short.class;
+		}
+		if (char.class.equals(clazz)) {
+			return Character.class;
+		}
+		return clazz;
+	}
+
+	/**
+	 * 获取包装类的基本类型
+	 * @param clazz 类型
+	 * @return 返回基本类型，如果不是包装类型，则返回本身
+	 */
+	public static Class<?> getBasicType(Class<?> clazz) {
+		if (Integer.class.equals(clazz)) {
+			return int.class;
+		}
+		if (Long.class.equals(clazz)) {
+			return long.class;
+		}
+		if (Boolean.class.equals(clazz)) {
+			return boolean.class;
+		}
+		if (Double.class.equals(clazz)) {
+			return double.class;
+		}
+		if (Float.class.equals(clazz)) {
+			return float.class;
+		}
+		if (Byte.class.equals(clazz)) {
+			return byte.class;
+		}
+		if (Short.class.equals(clazz)) {
+			return short.class;
+		}
+		if (Character.class.equals(clazz)) {
+			return char.class;
+		}
+		return clazz;
+	}
 }
