@@ -439,4 +439,29 @@ public class PackageUtil {
 		File file = new File(filePath);
 		file.delete();
 	}
+
+	/**
+	 * 判断类型是否是基本类型或者它们的包装类型或String类型
+	 * @param clazz 类型
+	 * @return 是返回true， 否则返回false
+	 */
+	public static boolean isBasicType(Class<?> clazz) {
+		return isBasicType(clazz, true);
+	}
+
+	/**
+	 * 判断类型是否是基本类型或者它们的包装类型
+	 * @param clazz 类型
+	 * @param includeString 是否包括String类型
+	 * @return 是返回true， 否则返回false
+	 */
+	public static boolean isBasicType(Class<?> clazz, boolean includeString) {
+		if (includeString && String.class.equals(clazz)) {
+			return true;
+		}
+		return clazz.isPrimitive() || Integer.class.equals(clazz) || Long.class.equals(clazz) ||
+				Boolean.class.equals(clazz) || Double.class.equals(clazz) ||
+				Float.class.equals(clazz) || Byte.class.equals(clazz) ||
+				Short.class.equals(clazz) || Character.class.equals(clazz);
+	}
 }
