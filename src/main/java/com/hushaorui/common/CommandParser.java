@@ -81,7 +81,6 @@ public class CommandParser {
     /**
      * Description: 判断命令中是否存在有效的 "-"，有与没有是两种风格
      * @author 胡绍瑞[hushaorei@163.com]
-     * @date 2021/10/10
      */
     public boolean isContainsMinusSign() {
         return containsMinusSign;
