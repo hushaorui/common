@@ -166,6 +166,7 @@ public abstract class AppStringUtils {
 
 
     private static Map<Set<String>, Map<String, Set<String>>> splitStrMapMapping = new ConcurrentHashMap<>();
+
     private static Map<String, Set<String>> transSplitSetToMap(Set<String> splitCollection) {
         return splitStrMapMapping.computeIfAbsent(splitCollection, k -> {
             Map<String, Set<String>> map = new HashMap<>();
@@ -177,9 +178,10 @@ public abstract class AppStringUtils {
                     map.computeIfAbsent(subStr, k2 -> new HashSet<>()).add(splitStr);
                 }
             }
-           return map;
+            return map;
         });
     }
+
     /**
      * 根据特定字符串切割，其中，引号可以让小括号和中括号失效，反斜线 "/" 可以让它们都失效
      *
@@ -190,6 +192,7 @@ public abstract class AppStringUtils {
     public static List<String> splitWithLongStr(String source, Set<String> splitStrSet) throws Exception {
         return split(source, transSplitSetToMap(splitStrSet));
     }
+
     /**
      * 根据特定字符串切割，其中，引号可以让小括号和中括号失效，反斜线 "/" 可以让它们都失效
      *
@@ -200,13 +203,14 @@ public abstract class AppStringUtils {
     public static List<String> split(String source, Map<String, Set<String>> splitStrMap) throws Exception {
         return split(source, splitStrMap, true, true);
     }
+
     /**
      * 根据特定字符串切割，其中，引号可以让小括号和中括号失效，反斜线 "/" 可以让它们都失效
      *
-     * @param source      原字符串
-     * @param splitStrMap 用于切割的字符(长度大于1)集合, key为这些切割字符的前子串，比如 123的前子串有1, 12, 123
+     * @param source        原字符串
+     * @param splitStrMap   用于切割的字符(长度大于1)集合, key为这些切割字符的前子串，比如 123的前子串有1, 12, 123
      * @param smallBrackets 考虑小括号
-     * @param brackets 考虑中括号
+     * @param brackets      考虑中括号
      * @return 切割后的字符串列表
      */
     public static List<String> split(String source, Map<String, Set<String>> splitStrMap, boolean smallBrackets, boolean brackets) throws Exception {
@@ -227,11 +231,12 @@ public abstract class AppStringUtils {
         StringBuilder builder = new StringBuilder();
         // 拼接切割字符
         StringBuilder splitBuilder = new StringBuilder();
-        outer:for (int index = 0; index < length; index++) {
+        outer:
+        for (int index = 0; index < length; index++) {
             // 单个字符
             String s = String.valueOf(source.charAt(index));
             // 不在 引号、小括号、中括号内
-            boolean isNormal = (leftQuotationCount + leftCnQuotationCount == 0) && (! smallBrackets || leftSmallBracketsCount == 0) && (! brackets || leftBracketsCount == 0)
+            boolean isNormal = (leftQuotationCount + leftCnQuotationCount == 0) && (!smallBrackets || leftSmallBracketsCount == 0) && (!brackets || leftBracketsCount == 0)
                     && leftBracesCount == 0;
             if (isNormal) {
                 // 注意，这里已经将 s 拼接上去了
@@ -292,7 +297,7 @@ public abstract class AppStringUtils {
                     continue;
                 }
             }
-            boolean old = ! lastIsBackslash;
+            boolean old = !lastIsBackslash;
             // 处理转义
             lastIsBackslash = lastIsBackslash(s, lastIsBackslash, leftQuotationCount, leftCnQuotationCount);
             if (lastIsBackslash) {
@@ -323,11 +328,11 @@ public abstract class AppStringUtils {
                 }
             } else if (s.equals("{")) {
                 if (leftQuotationCount + leftCnQuotationCount == 0) {
-                    leftBracesCount ++;
+                    leftBracesCount++;
                 }
             } else if (s.equals("}")) {
                 if (leftQuotationCount + leftCnQuotationCount == 0) {
-                    leftBracesCount --;
+                    leftBracesCount--;
                 }
             } else if (s.equals("(") || s.equals("（")) {
                 if (leftQuotationCount + leftCnQuotationCount == 0) {
@@ -345,7 +350,7 @@ public abstract class AppStringUtils {
         if (splitBuilder.length() > 0) {
             String prefix = splitBuilder.toString().intern();
             Set<String> splitStrSet = splitStrMap.get(prefix);
-            if (! splitStrSet.contains(prefix)) {
+            if (!splitStrSet.contains(prefix)) {
                 // 不是完整的切割符
                 builder.append(prefix);
             }
@@ -390,13 +395,14 @@ public abstract class AppStringUtils {
     public static List<String> split(String source, Collection<String> splitStrSet) throws Exception {
         return split(source, splitStrSet, true, true);
     }
+
     /**
      * 根据特定字符串切割，其中，引号可以让小括号和中括号失效，反斜线 "/" 可以让它们都失效
      *
-     * @param source      原字符串
-     * @param splitStrSet 用于切割的字符集合
+     * @param source        原字符串
+     * @param splitStrSet   用于切割的字符集合
      * @param smallBrackets 考虑小括号
-     * @param brackets 考虑中括号
+     * @param brackets      考虑中括号
      * @return 切割后的字符串列表
      */
     public static List<String> split(String source, Collection<String> splitStrSet, boolean smallBrackets, boolean brackets) throws Exception {
@@ -419,8 +425,8 @@ public abstract class AppStringUtils {
             // 单个字符
             String s = String.valueOf(source.charAt(index));
             if (splitStrSet.contains(s)) {
-                if (!lastIsBackslash && (leftQuotationCount + leftCnQuotationCount == 0) && (! smallBrackets || leftSmallBracketsCount == 0)
-                        && (! brackets || leftBracketsCount == 0) && leftBracesCount == 0) {
+                if (!lastIsBackslash && (leftQuotationCount + leftCnQuotationCount == 0) && (!smallBrackets || leftSmallBracketsCount == 0)
+                        && (!brackets || leftBracketsCount == 0) && leftBracesCount == 0) {
                     // 不在引号内，且不在括号内，且不在中括号内
                     // 是切割符
                     list.add(builder.toString());
@@ -428,7 +434,7 @@ public abstract class AppStringUtils {
                     continue;
                 }
             }
-            boolean old = ! lastIsBackslash;
+            boolean old = !lastIsBackslash;
             lastIsBackslash = lastIsBackslash(s, lastIsBackslash, leftQuotationCount, leftCnQuotationCount);
             if (lastIsBackslash) {
                 builder.append("\\");
@@ -458,11 +464,11 @@ public abstract class AppStringUtils {
                 }
             } else if (s.equals("{")) {
                 if (leftQuotationCount + leftCnQuotationCount == 0) {
-                    leftBracesCount ++;
+                    leftBracesCount++;
                 }
             } else if (s.equals("}")) {
                 if (leftQuotationCount + leftCnQuotationCount == 0) {
-                    leftBracesCount --;
+                    leftBracesCount--;
                 }
             } else if (s.equals("(") || s.equals("（")) {
                 if (leftQuotationCount + leftCnQuotationCount == 0) {
@@ -487,4 +493,65 @@ public abstract class AppStringUtils {
         return source.replace("\\\"", "\"").replace("\\“", "“").replace("\\“", "“")
                 .replace("\\”", "”");
     }
+
+    /**
+     * 获取一个集合的所有子集(无顺序，包括空集)
+     */
+    public static <T> List<List<T>> getSubSetList(List<T> list) {
+        List<List<T>> result = new ArrayList<>();
+        //先添加一个空集
+        result.add(new ArrayList<>());
+        for (T item : list) {
+            //获取当前子集个数
+            int size = result.size();
+            //依次取出当前子集并为每一子集添加元素list.get(i)
+            //最后再添加回result
+            for (int j = 0; j < size; j++) {
+                List<T> clone = new ArrayList<>(result.get(j));
+                clone.add(item);
+                result.add(clone);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取一个列表的全排列
+     * @param list 原列表
+     * @return 所有不同排列的列表
+     */
+    public static <T> List<List<T>> getAllArrays(List<T> list) {
+        int[] sequences = new int[list.size()];
+        for (int i = 0; i < sequences.length; i++) {
+            sequences[i] = i;
+        }
+        List<List<T>> resultList = new ArrayList<>();
+        dfs(list, sequences, 0, sequences.length - 1, resultList);
+        return resultList;
+    }
+
+    private static <T> void dfs(List<T> list, int[] sequences, int start, int end, List<List<T>> resultList) {
+        //递归结束条件
+        if (start == end) {
+            //System.out.println(Arrays.toString(sequences));//输出一个全排列序列
+            ArrayList<T> arrayList = new ArrayList<>(sequences.length);
+            for (int index : sequences) {
+                arrayList.add(list.get(index));
+            }
+            resultList.add(arrayList);
+            return;
+        }
+        for (int i = start; i <= end; i++) {
+            swap(sequences, start, i);//把当前第1个数与后面所有数交换位置，注意所以i是从start开始
+            dfs(list, sequences, start + 1, end, resultList);
+            swap(sequences, start, i);//恢复，用于下一次交换
+        }
+    }
+
+    private static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
 }
