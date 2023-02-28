@@ -56,6 +56,58 @@ public class RandomUtil {
 		return getRandomIntegers(randomSeq, seed, start, end, count, Collections.emptySet());
 	}
 
+    /**
+     * 在一定范围内随机多个不重复的数
+     * @param start 最小数，包括
+     * @param end 最大数，不包括
+     * @param count 随机数的数量，不能大于 end - start
+     * @return 随机出的数的集合
+     */
+    public static Collection<Integer> getRandomIntegers(String seed, String keyword, int start, int end, int count) {
+        return getRandomIntegers(seed, keyword, start, end, count, Collections.emptySet());
+    }
+
+    /**
+     * 在一定范围内随机多个不重复的数
+     * @param seed 种子
+     * @param keyword 关键字
+     * @param start 最小数，包括
+     * @param end 最大数，不包括
+     * @param count 随机数的数量，不能大于 end - start
+     * @param excludeSet 排除的数，不允许随机到
+     * @return 随机出的数的集合
+     */
+    public static Collection<Integer> getRandomIntegers(String seed, String keyword, int start, int end, int count, Set<Integer> excludeSet) {
+        int arrayLength = end - start - excludeSet.size();
+        if (arrayLength <= 0) {
+            return Collections.emptySet();
+        }
+        int[] array = new int[arrayLength];
+        int index = 0;
+        for (int i = start; i < end; i++) {
+            if (excludeSet.contains(i)) {
+                continue;
+            }
+            array[index ++] = i;
+        }
+        if (arrayLength == 1) {
+            return Collections.singleton(array[0]);
+        }
+
+        TreeSet<Integer> list = new TreeSet<>();
+        for (int i = 0; i < count; i++) {
+            // 随机一个索引
+            int randomIndex = getRandomCount(seed, keyword, start, end - 1);
+            int temp = array[randomIndex];
+            // 将该随机数放入列表
+            list.add(temp);
+            // 将该数和最后数交换位置
+            array[randomIndex] = array[arrayLength - i - 1];
+            array[arrayLength - i - 1] = temp;
+        }
+        return list;
+    }
+
 	/**
 	 * 在一定范围内随机多个不重复的数
 	 * @param randomSeq 序列
