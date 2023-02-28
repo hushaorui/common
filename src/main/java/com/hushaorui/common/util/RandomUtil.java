@@ -1,11 +1,13 @@
 package com.hushaorui.common.util;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RandomUtil {
 
 	private static ThreadLocal<Random> randomThreadLocal = new ThreadLocal<>();
+	private static Map<String, Map<String, AtomicInteger>> randomSeqMap = new ConcurrentHashMap<>();
 
 	public static Random getRandom() {
 		Random random = randomThreadLocal.get();
@@ -16,10 +18,31 @@ public class RandomUtil {
 		return random;
 	}
 
+	/**
+	 * 根据一个种子获取一个伪随机数
+	 * @param seed 种子，最好使用uuid，以免结果被很容易重现，使用的程序自己保存下来，以便每次随机时使用
+	 * @param randomSeq 序列
+	 * @param min 随机的最小值(包括最小值，可以被随机出来)
+	 * @param max 随机的最大值(包括最大值，可以被随机出来)
+	 * @return 随机的整数，在 int范围内
+	 */
 	public static int getRandomCount(AtomicInteger randomSeq, String seed, int min, int max) {
 		String md5 = MD5Utils.md5(seed + "," + randomSeq.getAndIncrement()).substring(0, 9);
 		long num = Long.parseLong(md5, 16);
 		return min + Math.abs((int) num) % (max + 1 - min);
+	}
+
+	/**
+	 * 根据一个种子获取一个伪随机数
+	 * @param seed 种子，最好使用uuid，以免结果被很容易重现，使用的程序自己保存下来，以便每次随机时使用
+	 * @param keyword 关键字， 和 seed 联合唯一维护一个序列
+	 * @param min 随机的最小值(包括最小值，可以被随机出来)
+	 * @param max 随机的最大值(包括最大值，可以被随机出来)
+	 * @return 随机的整数，在 int范围内
+	 */
+	public static int getRandomCount(String seed, String keyword, int min, int max) {
+		AtomicInteger atomicInteger = randomSeqMap.computeIfAbsent(seed, k -> new ConcurrentHashMap<>()).computeIfAbsent(keyword, k2 -> new AtomicInteger(1));
+		return getRandomCount(atomicInteger, seed, min, max);
 	}
 
 	/**
@@ -35,6 +58,8 @@ public class RandomUtil {
 
 	/**
 	 * 在一定范围内随机多个不重复的数
+	 * @param randomSeq 序列
+	 * @param seed 种子
 	 * @param start 最小数，包括
 	 * @param end 最大数，不包括
 	 * @param count 随机数的数量，不能大于 end - start
@@ -160,4 +185,5 @@ public class RandomUtil {
 		}
 		return getRandomIntegers(start, end, count, excludeSet);
 	}
+
 }
