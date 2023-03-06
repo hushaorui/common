@@ -23,7 +23,7 @@ public class RandomUtil {
 	 * @param seed 种子，最好使用uuid，以免结果被很容易重现，使用的程序自己保存下来，以便每次随机时使用
 	 * @param randomSeq 序列
 	 * @param min 随机的最小值(包括最小值，可以被随机出来)
-	 * @param max 随机的最大值(包括最大值，可以被随机出来)
+	 * @param max 随机的最大值(包括最大值，不可以被随机出来)
 	 * @return 随机的整数，在 int范围内
 	 */
 	public static int getRandomCount(AtomicInteger randomSeq, String seed, int min, int max) {
@@ -37,12 +37,12 @@ public class RandomUtil {
 	 * @param seed 种子，最好使用uuid，以免结果被很容易重现，使用的程序自己保存下来，以便每次随机时使用
 	 * @param keyword 关键字， 和 seed 联合唯一维护一个序列
 	 * @param min 随机的最小值(包括最小值，可以被随机出来)
-	 * @param max 随机的最大值(包括最大值，可以被随机出来)
+	 * @param max 随机的最大值(包括最大值，不可以被随机出来)
 	 * @return 随机的整数，在 int范围内
 	 */
 	public static int getRandomCount(String seed, String keyword, int min, int max) {
 		AtomicInteger atomicInteger = randomSeqMap.computeIfAbsent(seed, k -> new ConcurrentHashMap<>()).computeIfAbsent(keyword, k2 -> new AtomicInteger(1));
-		return getRandomCount(atomicInteger, seed, min, max);
+		return getRandomCount(atomicInteger, seed, min, max - 1);
 	}
 
 	/**
