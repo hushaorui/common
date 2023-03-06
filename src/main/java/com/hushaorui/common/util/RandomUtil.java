@@ -97,7 +97,7 @@ public class RandomUtil {
         TreeSet<Integer> list = new TreeSet<>();
         for (int i = 0; i < count; i++) {
             // 随机一个索引
-            int randomIndex = getRandomCount(seed, keyword, start, end - 1);
+            int randomIndex = getRandomCount(seed, keyword, 0, arrayLength - i);
             int temp = array[randomIndex];
             // 将该随机数放入列表
             list.add(temp);
@@ -138,7 +138,7 @@ public class RandomUtil {
 		TreeSet<Integer> list = new TreeSet<>();
 		for (int i = 0; i < count; i++) {
 			// 随机一个索引
-			int randomIndex = getRandomCount(randomSeq, seed, start, end - 1);
+			int randomIndex = getRandomCount(randomSeq, seed, 0, arrayLength - i);
 			int temp = array[randomIndex];
 			// 将该随机数放入列表
 			list.add(temp);
