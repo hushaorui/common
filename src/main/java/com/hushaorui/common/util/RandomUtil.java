@@ -238,4 +238,92 @@ public class RandomUtil {
 		return getRandomIntegers(start, end, count, excludeSet);
 	}
 
+	/**
+	 * 随机一个满足条件的数组
+	 * @param seed 随机种子
+	 * @param key 随机种子
+	 * @param minNum 数组每个元素的最小值
+	 * @param maxNum 数组每个元素的最大值
+	 * @param totalMinNum 数组所有元素之和的最小值
+	 * @param totalMaxNum 数组所有元素之和的最大值
+	 * @param count 数组的长度
+	 * @return 随机数组
+	 */
+	public static int[] getRandomArray(String seed, String key, int minNum, int maxNum, int totalMinNum, int totalMaxNum, int count) {
+		// 校验合法性
+		if (totalMinNum < minNum * count) {
+			//throw new RuntimeException("totalMinNum 过低");
+			// 进行修正
+			totalMinNum = minNum * count;
+		}
+		if (totalMaxNum > maxNum * count) {
+			//throw new RuntimeException("totalMaxNum 过高");
+			// 进行修正
+			totalMaxNum = maxNum * count;
+		}
+		// 最终结果
+		int[] resultArray = new int[count];
+		// 已经随机完的人数
+		int tempCount = 0;
+		// 已经随机过的索引
+		Set<Integer> tempIndexSet = new HashSet<>();
+		for (int i = 0; i < count; i++) {
+			// 随机索引
+			Collection<Integer> randomIntegers = getRandomIntegers(seed, key, 0, count, 1, tempIndexSet);
+			int index = randomIntegers.iterator().next();
+			tempIndexSet.add(index);
+			// 还剩多少人数可以随机
+			int leftCount = totalMaxNum - tempCount;
+			// 还剩有几个区域没有随机，包括当前区域
+			int leftAreaCount = count - i;
+			// 除去其他区域保底的人数，可以有多少人数可以随机
+			int finalLeft = leftCount - minNum * leftAreaCount;
+			// 以最大值分配需要多少人数
+			int max = maxNum * leftAreaCount;
+			int randomCount;
+			if (max <= totalMinNum - tempCount) {
+				randomCount = maxNum;
+			} else {
+				// 本次可随机的最大值与最小值的差
+				int delta = Math.min(finalLeft, maxNum - minNum);
+				// 随机
+				randomCount = getRandomCount(seed, key, minNum, minNum + delta + 1);
+			}
+			tempCount += randomCount;
+			// 赋值
+			resultArray[index] = randomCount;
+		}
+		// 如果随机后的总人数比最小总人数还小，则随机给已经随机的结果加数值
+		if (tempCount < totalMinNum) {
+			int min = totalMinNum - tempCount;
+			// 随机一个加分总数
+			int addScore = getRandomCount(seed, key, min, totalMaxNum - totalMinNum + min + 1);
+			if (addScore % count == 0) {
+				int score = addScore / count;
+				// 加的分数正好整除，也不用随机了，所有数值都加同样的分数
+				for (int i = 0; i < resultArray.length; i++) {
+					resultArray[i] = resultArray[i] + score;
+				}
+			}
+			// 加分值
+			int score = addScore / count + 1;
+			// 清理set，再用一次
+			tempIndexSet.clear();
+			// 加的分数
+			int tempScore = 0;
+			for (int i = 0; i < resultArray.length; i++) {
+				Collection<Integer> randomIntegers = getRandomIntegers(seed, key, 0, count, 1, tempIndexSet);
+				int index = randomIntegers.iterator().next();
+				int temp = Math.min(addScore - tempScore, score);
+				resultArray[index] = resultArray[index] + temp;
+				tempScore += temp;
+				// 这个值就没必要累加了
+				//tempCount += temp;
+				if (tempScore >= addScore) {
+					break;
+				}
+			}
+		}
+		return resultArray;
+	}
 }
