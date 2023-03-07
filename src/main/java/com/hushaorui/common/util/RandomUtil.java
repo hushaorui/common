@@ -304,25 +304,26 @@ public class RandomUtil {
 				for (int i = 0; i < resultArray.length; i++) {
 					resultArray[i] = resultArray[i] + score;
 				}
-			}
-			// 加分值
-			int score = addScore / count + 1;
-			// 清理set，再用一次
-			tempIndexSet.clear();
-			// 加的分数
-			int tempScore = 0;
-			for (int i = 0; i < resultArray.length; i++) {
-				Collection<Integer> randomIntegers = getRandomIntegers(seed, key, 0, count, 1, tempIndexSet);
-				int index = randomIntegers.iterator().next();
-				int temp = Math.min(addScore - tempScore, score);
-				resultArray[index] = resultArray[index] + temp;
-				tempScore += temp;
-				// 这个值就没必要累加了
-				//tempCount += temp;
-				if (tempScore >= addScore) {
-					break;
-				}
-			}
+			} else {
+                // 加分值
+                int score = addScore / count + 1;
+                // 清理set，再用一次
+                tempIndexSet.clear();
+                // 加的分数
+                int tempScore = 0;
+                for (int i = 0; i < resultArray.length; i++) {
+                    Collection<Integer> randomIntegers = getRandomIntegers(seed, key, 0, count, 1, tempIndexSet);
+                    int index = randomIntegers.iterator().next();
+                    int temp = Math.min(addScore - tempScore, score);
+                    resultArray[index] = resultArray[index] + temp;
+                    tempScore += temp;
+                    // 这个值就没必要累加了
+                    //tempCount += temp;
+                    if (tempScore >= addScore) {
+                        break;
+                    }
+                }
+            }
 		}
 		return resultArray;
 	}
