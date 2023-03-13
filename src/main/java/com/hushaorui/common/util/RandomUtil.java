@@ -52,7 +52,7 @@ public class RandomUtil {
 	 * @param count 随机数的数量，不能大于 end - start
 	 * @return 随机出的数的集合
 	 */
-	public static Collection<Integer> getRandomIntegers(AtomicInteger randomSeq, String seed, int start, int end, int count) {
+	public static List<Integer> getRandomIntegers(AtomicInteger randomSeq, String seed, int start, int end, int count) {
 		return getRandomIntegers(randomSeq, seed, start, end, count, Collections.emptySet());
 	}
 
@@ -63,7 +63,7 @@ public class RandomUtil {
      * @param count 随机数的数量，不能大于 end - start
      * @return 随机出的数的集合
      */
-    public static Collection<Integer> getRandomIntegers(String seed, String keyword, int start, int end, int count) {
+    public static List<Integer> getRandomIntegers(String seed, String keyword, int start, int end, int count) {
         return getRandomIntegers(seed, keyword, start, end, count, Collections.emptySet());
     }
 
@@ -77,10 +77,10 @@ public class RandomUtil {
      * @param excludeSet 排除的数，不允许随机到
      * @return 随机出的数的集合
      */
-    public static Collection<Integer> getRandomIntegers(String seed, String keyword, int start, int end, int count, Set<Integer> excludeSet) {
+    public static List<Integer> getRandomIntegers(String seed, String keyword, int start, int end, int count, Set<Integer> excludeSet) {
         int arrayLength = end - start - excludeSet.size();
         if (arrayLength <= 0) {
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
         int[] array = new int[arrayLength];
         int index = 0;
@@ -91,10 +91,10 @@ public class RandomUtil {
             array[index ++] = i;
         }
         if (arrayLength == 1) {
-            return Collections.singleton(array[0]);
+            return Collections.singletonList(array[0]);
         }
 
-        TreeSet<Integer> list = new TreeSet<>();
+        ArrayList<Integer> list = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             // 随机一个索引
             int randomIndex = getRandomCount(seed, keyword, 0, arrayLength - i);
@@ -118,10 +118,10 @@ public class RandomUtil {
 	 * @param excludeSet 排除的数，不允许随机到
 	 * @return 随机出的数的集合
 	 */
-	public static Collection<Integer> getRandomIntegers(AtomicInteger randomSeq, String seed, int start, int end, int count, Set<Integer> excludeSet) {
+	public static List<Integer> getRandomIntegers(AtomicInteger randomSeq, String seed, int start, int end, int count, Set<Integer> excludeSet) {
 		int arrayLength = end - start - excludeSet.size();
 		if (arrayLength <= 0) {
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 		int[] array = new int[arrayLength];
 		int index = 0;
@@ -132,10 +132,10 @@ public class RandomUtil {
 			array[index ++] = i;
 		}
 		if (arrayLength == 1) {
-			return Collections.singleton(array[0]);
+			return Collections.singletonList(array[0]);
 		}
 
-		TreeSet<Integer> list = new TreeSet<>();
+		ArrayList<Integer> list = new ArrayList<>(count);
 		for (int i = 0; i < count; i++) {
 			// 随机一个索引
 			int randomIndex = getRandomCount(randomSeq, seed, 0, arrayLength - i);
@@ -176,7 +176,7 @@ public class RandomUtil {
 	 * @param count 随机数的数量，不能大于 end - start
 	 * @return 随机出的数的集合
 	 */
-	public static Collection<Integer> getRandomIntegers(int start, int end, int count) {
+	public static List<Integer> getRandomIntegers(int start, int end, int count) {
 		return getRandomIntegers(start, end, count, Collections.emptySet());
 	}
 
@@ -188,11 +188,11 @@ public class RandomUtil {
 	 * @param excludeSet 排除的数，不允许随机到
 	 * @return 随机出的数的集合
 	 */
-	public static Collection<Integer> getRandomIntegers(int start, int end, int count, Set<Integer> excludeSet) {
+	public static List<Integer> getRandomIntegers(int start, int end, int count, Set<Integer> excludeSet) {
 		Random random = getRandom();
 		int arrayLength = end - start - excludeSet.size();
 		if (arrayLength <= 0) {
-			return Collections.emptySet();
+			return Collections.emptyList();
 		}
 		int[] array = new int[arrayLength];
 		int index = 0;
@@ -203,10 +203,10 @@ public class RandomUtil {
 			array[index ++] = i;
 		}
 		if (arrayLength == 1) {
-			return Collections.singleton(array[0]);
+			return Collections.singletonList(array[0]);
 		}
 
-		TreeSet<Integer> list = new TreeSet<>();
+		ArrayList<Integer> list = new ArrayList<>(count);
 		for (int i = 0; i < count; i++) {
 			// 随机一个索引
 			int randomIndex = random.nextInt(arrayLength - i);
@@ -227,7 +227,7 @@ public class RandomUtil {
 	 * @param exclude 排除的数，不允许随机到
 	 * @return 随机出的数的集合
 	 */
-	public static Collection<Integer> getRandomIntegers(int start, int end, int count, Integer... exclude) {
+	public static List<Integer> getRandomIntegers(int start, int end, int count, Integer... exclude) {
 		Set<Integer> excludeSet;
 		if (exclude != null && exclude.length > 0) {
 			excludeSet = new HashSet<>(exclude.length,  1.5f);
@@ -269,7 +269,7 @@ public class RandomUtil {
 		Set<Integer> tempIndexSet = new HashSet<>();
 		for (int i = 0; i < count; i++) {
 			// 随机索引
-			Collection<Integer> randomIntegers = getRandomIntegers(seed, key, 0, count, 1, tempIndexSet);
+			List<Integer> randomIntegers = getRandomIntegers(seed, key, 0, count, 1, tempIndexSet);
 			int index = randomIntegers.iterator().next();
 			tempIndexSet.add(index);
 			// 还剩多少人数可以随机
@@ -312,7 +312,7 @@ public class RandomUtil {
                 // 加的分数
                 int tempScore = 0;
                 for (int i = 0; i < resultArray.length; i++) {
-                    Collection<Integer> randomIntegers = getRandomIntegers(seed, key, 0, count, 1, tempIndexSet);
+                    List<Integer> randomIntegers = getRandomIntegers(seed, key, 0, count, 1, tempIndexSet);
                     int index = randomIntegers.iterator().next();
                     int temp = Math.min(addScore - tempScore, score);
                     resultArray[index] = resultArray[index] + temp;
