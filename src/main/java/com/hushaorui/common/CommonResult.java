@@ -5,6 +5,7 @@ public class CommonResult {
     private static final CommonResult dataCannotBeNullError = new CommonResult(WebConstants.ERROR, "数据不可为空！");
     private static final CommonResult addSuccess = new CommonResult(WebConstants.SUCCESS, "添加成功！");
     private static final CommonResult updateSuccess = new CommonResult(WebConstants.SUCCESS, "修改成功！");
+    private static final CommonResult saveSuccess = new CommonResult(WebConstants.SUCCESS, "保存成功！");
     private static final CommonResult deleteSuccess = new CommonResult(WebConstants.SUCCESS, "删除成功！");
     private String result;
     private String message;
@@ -22,6 +23,9 @@ public class CommonResult {
     }
     public static CommonResult updateSuccess() {
         return updateSuccess;
+    }
+    public static CommonResult saveSuccess() {
+        return saveSuccess;
     }
     public static CommonResult deleteSuccess() {
         return deleteSuccess;
