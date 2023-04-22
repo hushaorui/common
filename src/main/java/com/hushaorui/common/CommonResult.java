@@ -9,10 +9,16 @@ public class CommonResult {
     private static final CommonResult deleteSuccess = new CommonResult(WebConstants.SUCCESS, "删除成功！");
     private String result;
     private String message;
+    private Object data;
 
     public CommonResult(String result, String message) {
         this.result = result;
         this.message = message;
+    }
+
+    public CommonResult(String result, Object data) {
+        this.result = result;
+        this.data = data;
     }
 
     public static CommonResult success(String message) {
@@ -41,6 +47,9 @@ public class CommonResult {
         return systemError;
     }
 
+    public static CommonResult successData(Object data) {
+        return new CommonResult(WebConstants.SUCCESS, data);
+    }
     public String getResult() {
         return result;
     }
