@@ -58,4 +58,7 @@ public class CommonResult {
         return message;
     }
 
+    public Object getData() {
+        return data;
+    }
 }
