@@ -557,13 +557,79 @@ public abstract class AppStringUtils {
 
     private static final String[] valToChn = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};
     private static final String[] sectionUnit = {"", "万", "亿", "万亿"};
+    private static final Map<String, Integer> chineseAndNumMap;
+    static {
+        Map<String, Integer> tempMap = new HashMap<>(valToChn.length, 1.5f);
+        for (int i = 0; i < valToChn.length; i++) {
+            tempMap.put(valToChn[i], i);
+        }
+        chineseAndNumMap = Collections.unmodifiableMap(tempMap);
+    }
 
     /**
-     * 将阿拉伯数字转换为中文
+     * 根据中文数字获取对应的阿拉伯数字
+     * @param chineseString 中午数字 负零一二三四五六七八九
+     * @return 数字
+     */
+    public static Long getNumFromChinese(String chineseString) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < chineseString.length(); i++) {
+            String key = String.valueOf(chineseString.charAt(i));
+            if ("负".equals(key)) {
+                builder.append("-");
+            } else {
+                builder.append(chineseAndNumMap.get(key));
+            }
+        }
+        return Long.parseLong(builder.toString());
+    }
+    /**
+     * 将阿拉伯数字简单地转化为中文数字，不保证可读性
+     * @param number 阿拉伯数字
+     * @return 中午数字
+     */
+    public static String getChineseFromNum(long number) {
+        boolean burden;
+        if (number < 0) {
+            // 转化为正数再算
+            number = - number;
+            burden = true;
+        } else {
+            burden = false;
+        }
+        StringBuilder builder = new StringBuilder();
+        while (number >= 10) {
+            builder.insert(0, valToChn[(int) (number % 10)]);
+            number /= 10;
+        }
+        builder.insert(0, valToChn[(int) number]);
+        if (burden) {
+            builder.insert(0, "负");
+        }
+        return builder.toString();
+    }
+
+/*    public static void main(String[] args) {
+        String chineseFromNum1 = getChineseFromNum(100000);
+        System.out.println(chineseFromNum1);
+        String chineseFromNum2 = getChineseFromNum(100001);
+        System.out.println(chineseFromNum2);
+        String chineseFromNum3 = getChineseFromNum(1859289981);
+        System.out.println(chineseFromNum3);
+        String chineseFromNum4 = getChineseFromNum(-1859289981);
+        System.out.println(chineseFromNum4);
+        System.out.println(getNumFromChinese(chineseFromNum1));
+        System.out.println(getNumFromChinese(chineseFromNum2));
+        System.out.println(getNumFromChinese(chineseFromNum3));
+        System.out.println(getNumFromChinese(chineseFromNum4));
+    }*/
+
+    /**
+     * 将阿拉伯数字转换为可读性好的中文
      * @param num 阿拉伯数字
      * @return 中文数字
      */
-    public static String numToChinese(int num) {
+    public static String numToReadableChinese(int num) {
         StringBuilder res = new StringBuilder();
         int index = 0; //等于0 可以表示这是右边第一个section，用于判定是否将 0000 转换为零
         while (num > 0) {
