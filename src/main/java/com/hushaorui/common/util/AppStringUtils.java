@@ -517,6 +517,7 @@ public abstract class AppStringUtils {
 
     /**
      * 获取一个列表的全排列
+     *
      * @param list 原列表
      * @return 所有不同排列的列表
      */
@@ -554,4 +555,66 @@ public abstract class AppStringUtils {
         a[j] = temp;
     }
 
+    private static final String[] valToChn = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};
+    private static final String[] sectionUnit = {"", "万", "亿", "万亿"};
+
+    /**
+     * 将阿拉伯数字转换为中文
+     * @param num 阿拉伯数字
+     * @return 中文数字
+     */
+    public static String numToChinese(int num) {
+        StringBuilder res = new StringBuilder();
+        int index = 0; //等于0 可以表示这是右边第一个section，用于判定是否将 0000 转换为零
+        while (num > 0) {
+            int section = num % 10000;
+            num = num / 10000;
+            if (num == 0) { //num == 0表示 这是最后一个part 那么这个part中的前导0不能变成零 如 0010 应该为 一十
+                String temp = sectionToChinese(section, true);
+                res.insert(0, temp + sectionUnit[index]);
+            } else {  //非最后一个part 前导0可以变成零 如 1 0001 为：一万零一
+                String temp = sectionToChinese(section, false);
+                res.insert(0, temp + sectionUnit[index]);
+            }
+            index++;  //section的权重上升
+        }
+        return res.toString();
+    }
+
+    //辅助函数：将4位的section转换为中文，对于0000是会返回 null，因此 0000需要主逻辑特判
+    private static String sectionToChinese(int section, boolean isFirstSection) {
+        StringBuilder sb = new StringBuilder();
+        int thousand = (section / 1000) % 10;  //取出千位
+        int hundred = (section / 100) % 10;
+        int ten = (section / 10) % 10;
+        int one = (section) % 10;
+
+        if (thousand != 0) {
+            sb.append(valToChn[thousand]).append("千");
+
+        } else if (isFirstSection || (hundred == 0 && ten == 0 && one == 0)) { //不加零的情况： 前面一位是0 或者 后面所有位为0
+            // do nothing
+        } else {
+            sb.append(valToChn[0]); //0不用添加单位
+        }
+
+        if (hundred != 0) {
+            sb.append(valToChn[hundred]).append("百");
+        } else if (thousand == 0 || one == 0 && ten == 0) {  //不加零的情况： 前面一位是0 或者 后面所有位为0
+            // do nothing
+        } else {
+            sb.append(valToChn[0]);
+        }
+        if (ten != 0) {
+            sb.append(valToChn[ten]).append("十");
+        } else if (hundred == 0 || one == 0) {  //不加零的情况： 前面一位是0 或者 后面所有位为0
+            // do nothing
+        } else {
+            sb.append(valToChn[0]);
+        }
+        if (one != 0) {  //个位为0直接不用翻译了
+            sb.append(valToChn[one]);
+        }
+        return sb.toString();
+    }
 }
